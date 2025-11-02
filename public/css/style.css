@@ -24,6 +24,16 @@ body{
 
 }
 
+.nav-link:hover {
+  color: #fe424d !important;
+}
+
+.navbar-toggler {
+  border-color: #fe424d !important;
+}
+
+
+
 /* FOOTER */
 .f-info-links a {
   text-decoration: none;
@@ -109,4 +119,8 @@ body{
 .show-card{
   padding-left: 0;
     padding-right: 0;
+}
+.f-infi-brand {
+  display: block;   /* ensures each div is on a new line */
+  margin: 5px 0;    /* adds spacing */
 }
