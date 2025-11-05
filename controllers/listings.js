@@ -42,7 +42,9 @@ module.exports.editForm = async (req, res) => {
     res.redirect("/listings");
   }
   let originalImage = listing.image.url;
-  originalImage= originalImage.replace("/upload,/upload/h_300,w_250");
+  if (originalImage && originalImage.includes("/upload")) {
+    originalImage = originalImage.replace("/upload", "/upload/h_300,w_250");
+  }
   res.render("listings/edit.ejs", { listing, originalImage });
 };
 

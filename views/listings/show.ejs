@@ -82,10 +82,10 @@
     <div class="mb-3 mt-3">
       <label for="comment" class="form-label">Comment</label>
       <textarea
-        name="review[comment]  "
+        name="review[comment]"
         id="comment"
-        col="30"
-        rows="5 "
+        cols="30"
+        rows="5"
         class="form-control"
         required
       ></textarea>
@@ -108,13 +108,15 @@
         <p class="card-text"><%=review.comment %></p> 
        
       </div>
-      <form
-        class="mb-3"
-        method="POST"
-        action="/listings/<%=listing._id %>/reviews/<%=review._id %>?_method=DELETE"
-      >
-        <button class="btn btn-sm btn-dark" style="margin-top: 1rem;">Delete</button>
-      </form>
+      <% if (currUser && review.author && review.author._id.equals(currUser._id)) { %>
+        <form
+          class="mb-3"
+          method="POST"
+          action="/listings/<%=listing._id %>/reviews/<%=review._id %>?_method=DELETE"
+        >
+          <button class="btn btn-sm btn-dark" style="margin-top: 1rem;">Delete</button>
+        </form>
+      <% } %>
     </div> 
     <% } %>
   </div>

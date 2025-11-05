@@ -5,7 +5,7 @@ const sampleListings = [
       "Escape to this charming beachfront cottage for a relaxing getaway. Enjoy stunning ocean views and easy access to the beach.",
     image: {
       filename: "listingimage",
-      url: "https://unsplash.com/photos/dramatic-sunset-over-a-rocky-mountain-landscape-XwTdNWEzoR8",
+      url: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=60",
     },
     price: 1500,
     location: "Malibu",

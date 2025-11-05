@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 const Review = require("./review.js");
-const { urlencoded } = require("express");
-const { string } = require("joi");
 const Schema = mongoose.Schema;
 
 
@@ -35,7 +33,7 @@ const listingSchema = new Schema({
 });
 listingSchema.post("findOneAndDelete", async (listing) => {
   if (listing) {
-    await Review.deleteMany({ reviews: { $in: listing.reviews } });
+    await Review.deleteMany({ _id: { $in: listing.reviews } });
   }
 })
 
