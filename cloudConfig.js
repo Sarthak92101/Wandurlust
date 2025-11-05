@@ -2,7 +2,6 @@ const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
 
-// Normalize env vars (trim to avoid invisible whitespace/newline issues)
 const ENV = {
   CLOUD_NAME: process.env.CLOUD_NAME && process.env.CLOUD_NAME.trim(),
   CLOUD_API_KEY: process.env.CLOUD_API_KEY && process.env.CLOUD_API_KEY.trim(),
