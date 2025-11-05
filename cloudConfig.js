@@ -2,18 +2,35 @@ const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
 
-//  Cloudinary config
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET 
-});
+// Normalize env vars (trim to avoid invisible whitespace/newline issues)
+const ENV = {
+  CLOUD_NAME: process.env.CLOUD_NAME && process.env.CLOUD_NAME.trim(),
+  CLOUD_API_KEY: process.env.CLOUD_API_KEY && process.env.CLOUD_API_KEY.trim(),
+  CLOUD_API_SECRET: process.env.CLOUD_API_SECRET && process.env.CLOUD_API_SECRET.trim(),
+  CLOUDINARY_URL: process.env.CLOUDINARY_URL && process.env.CLOUDINARY_URL.trim()
+};
 
-//  Multer Storage setup
+// Configure Cloudinary using either CLOUDINARY_URL or discrete creds
+if (ENV.CLOUDINARY_URL) {
+  cloudinary.config({ cloudinary_url: ENV.CLOUDINARY_URL });
+} else {
+  if (!ENV.CLOUD_NAME || !ENV.CLOUD_API_KEY || !ENV.CLOUD_API_SECRET) {
+    throw new Error(
+      "Cloudinary configuration error: Missing CLOUD_NAME, CLOUD_API_KEY, or CLOUD_API_SECRET. Check your environment variables."
+    );
+  }
+  cloudinary.config({
+    cloud_name: ENV.CLOUD_NAME,
+    api_key: ENV.CLOUD_API_KEY,
+    api_secret: ENV.CLOUD_API_SECRET
+  });
+}
+
+// Multer Storage setup
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
+  cloudinary,
   params: {
-    folder: 'Wanderlust_DEV', // your folder name in Cloudinary
+    folder: 'Wanderlust_DEV',
     allowed_formats: ['jpeg', 'png', 'jpg', 'webp']
   }
 });
