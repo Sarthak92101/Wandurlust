@@ -1,120 +1,117 @@
-if (process.env.NODE_ENV !== "production") {
+if(process.env.NODE_ENV!=="production"){
   require("dotenv").config();
 }
-
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const path = require("path");
+const Listing = require("./models/listing.js");
+const { listen } = require("express/lib/application");
+const path = require("path")
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const session = require("express-session");
-const MongoStore = require("connect-mongo");
-const flash = require("connect-flash");
-const passport = require("passport");
-const LocalStrategy = require("passport-local");
 const ExpressError = require("./utils/ExpressError.js");
+const listingsRouter=require("./routes/listing.js")
+const reviewsRouter=require("./routes/review.js")
+const userRouter=require("./routes/user.js")
+const session=require("express-session"); 
+ const MongoStrore=require("connect-mongo");
+const flash =require("connect-flash");
+const passport=require("passport");
+const LocalStratergy=require("passport-local"); 
+const User =require("./models/user.js");  
 
-// Models
-const User = require("./models/user.js");
+const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 
-// Routers
-const listingsRouter = require("./routes/listing.js");
-const reviewsRouter = require("./routes/review.js");
-const userRouter = require("./routes/user.js");
+const dburl=process.env.ATLASDB_URL;
 
-// MongoDB Atlas URL (from environment variable)
-const dbUrl = process.env.ATLASDB_URL;
-
-// ----------------- Database Connection -----------------
-main()
-  .then(() => console.log("✅ Connected to MongoDB"))
-  .catch((err) => console.log("❌ Database connection error:", err));
-
+main().then(() => {
+  console.log("connected to DB")
+}).catch(err => {
+  console.log(err);
+})
 async function main() {
-  await mongoose.connect(dbUrl);
+  await mongoose.connect(dburl);
 }
 
-// ----------------- App Configuration -----------------
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-app.engine("ejs", ejsMate);
-
+app.set("views", path.join(__dirname, "views"))
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
-// ----------------- Session Configuration -----------------
-const store = MongoStore.create({
-  mongoUrl: dbUrl,
-  crypto: {
-    secret: process.env.SECRET,
-  },
-  touchAfter: 24 * 60 * 60, // time period in seconds
-});
 
-store.on("error", function (e) {
-  console.log("Session store error:", e);
-});
-
-const sessionOptions = {
-  store,
-  secret: process.env.SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000, // 1 week
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
+const store=MongoStrore.create({
+  mongoUrl:dburl,
+  crypto:{
+    secret:process.env.SECRET
   },
+  touchAfter:24*60*60
+}) 
+
+store.on("error",function(e){
+  console.log("Error in mongo session store",e   );
+})
+
+const sessionOption={
+  store, 
+  secret:process.env.SECRET, 
+  resave:false,
+  saveUninitialized:true,
+  Cookie:{
+    expires:Date.now()+7*60*60*24*1000,
+    maxAge:7*60*60*24*1000,
+    httpOnly:true
+  }
 };
 
-app.use(session(sessionOptions));
-app.use(flash());
+app.get("/", (req, res) => {
+  res.redirect("/listings")
+})
 
-// ----------------- Passport Configuration -----------------
+
+
+app.use(session(sessionOption));
+app.use(flash()); 
+
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
+passport.use(new LocalStratergy(User.authenticate()));
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.serializeUser(User.serializeUser()); //Serialize user into session
+passport.deserializeUser(User.deserializeUser());  ////des erialize user into session
 
-// ----------------- Flash Middleware -----------------
-app.use((req, res, next) => {
-  res.locals.success = req.flash("success");
-  res.locals.error = req.flash("error");
-  res.locals.currUser = req.user;
+
+app.use((req,res,next)=>{
+  res.locals.success=req.flash("success");
+  res.locals.error=req.flash("error");
+  res.locals.currUser=req.user;
   next();
 });
 
-// ----------------- Routes -----------------
-app.get("/", (req, res) => {
-  // Redirect root URL to listings page
-  res.redirect("/listings");
-});
+// app.get("/demouser", async(req,res)=>{
+//   let fakeUSer= new User({
+//     email:"2bMkF@example.com",
+//     username:"demoUser"
+//   });
+//   let registeredUser=  await User.register(fakeUSer,"helloworld")
+//   res.send(registeredUser)
+// })
 
-// Optional: If you have a home.ejs file, use this instead
-// app.get("/", (req, res) => {
-//   res.render("home.ejs");
-// });
+app.use("/listings",listingsRouter)
+app.use("/listings/:id/reviews",reviewsRouter)
+app.use("/",userRouter )
 
-app.use("/listings", listingsRouter);
-app.use("/listings/:id/reviews", reviewsRouter);
-app.use("/", userRouter);
-
-// ----------------- Error Handling -----------------
-app.all("*", (req, res, next) => {
-  next(new ExpressError(404, "Page Not Found!"));
-});
+ 
+// app.all("*",(req,res,next)=>{
+//   next(new ExpressError(404,"Page Not Found!"))
+// })
 
 app.use((err, req, res, next) => {
-  const { statusCode = 500, message = "Something went wrong" } = err;
+  let { statusCode = 500, message = "Something went wrong" } = err;
   res.status(statusCode).render("error.ejs", { err });
-});
+})
 
-// ----------------- Start Server -----------------
-const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  console.log(`🚀 Server running on port ${port}`);
-});
+app.listen(8080, () => {
+  console.log("Server is listeining to port 8080");
+})
