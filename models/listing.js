@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const Review = require("./review.js");
+const { urlencoded } = require("express");
+const { string } = require("joi");
 const Schema = mongoose.Schema;
 
 
@@ -11,14 +13,8 @@ const listingSchema = new Schema({
   description: String,
 
   image: {
-    filename: {
-      type: String,
-      default: "default-image"
-    },
-    url: {
-      type: String,
-      default: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    }
+    url: String,
+    filename: String
   },
 
   price: Number,
@@ -34,6 +30,8 @@ const listingSchema = new Schema({
     type:Schema.Types.ObjectId,
     ref:"User"
   },
+  //add for Google maps
+
 });
 listingSchema.post("findOneAndDelete", async (listing) => {
   if (listing) {

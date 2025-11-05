@@ -124,3 +124,9 @@ body{
   display: block;   /* ensures each div is on a new line */
   margin: 5px 0;    /* adds spacing */
 }
+
+  .mb-3 img {
+    display: block;
+    margin: 0;
+    max-height: 200px; /* prevents huge images */
+  }
