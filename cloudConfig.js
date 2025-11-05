@@ -12,7 +12,8 @@ const ENV = {
 
 // Configure Cloudinary using either CLOUDINARY_URL or discrete creds
 if (ENV.CLOUDINARY_URL) {
-  cloudinary.config({ cloudinary_url: ENV.CLOUDINARY_URL });
+  // The SDK accepts a connection string directly
+  cloudinary.config(ENV.CLOUDINARY_URL);
 } else {
   if (!ENV.CLOUD_NAME || !ENV.CLOUD_API_KEY || !ENV.CLOUD_API_SECRET) {
     throw new Error(
