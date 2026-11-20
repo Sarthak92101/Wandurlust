@@ -1,137 +1,35 @@
 <% layout("/layouts/boilerplate") %>
 
-<style>
-  #filters{
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .filter{
-    text-align: center;
-    margin-right: 2rem;
-    margin-top: 1.5rem;
-    opacity: 0.7;
-  }
-  .filter:hover{
-    opacity: 1;
-    cursor: pointer;
-  }
-  .filter p{
-    font-size: 0.8rem;
-  }
-  .taxinfo{
-    display: none;
-  }
-  .tax-toggle{
-    border: 1px solid black;
-    border-radius: 1rem;
-    height: 3.25rem;
-    padding: 1rem;
-    margin-left: 5rem;
-    display: flex;
-    align-items: center;
-  }
-  @media (max-width: 575.98px){
-    #filters { justify-content: space-between; }
-    .tax-toggle{ margin-left: 0; margin-top: 1rem; }
-  }
-</style>
+<section class="page-heading">
+  <p class="text-uppercase small fw-bold" style="color: var(--brand); letter-spacing: .12em">A little escape awaits</p>
+  <h1 class="display-6 fw-bold"><%= searchQuery ? `Stays near “${searchQuery}”` : 'Find your somewhere' %></h1>
+  <p>Thoughtful places for your next memorable getaway.</p>
+</section>
 
-<div id="filters">
-  <div class="filter">
-    <div><i class="fa-solid fa-fire-flame-curved"></i></div>
-    <p>Trending</p>
-  </div>
-
-  <div class="filter">
-    <div><i class="fa-solid fa-bed"></i></div>
-    <p>Rooms</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-mountain-city"></i></i></div>
-    <p>Iconic Cities</p>
-  </div>
-
-  <div class="filter">
-    <div><i class="fa-solid fa-mountain"></i></div>
-    <p>Mountains</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-brands fa-fort-awesome"></i></div>
-    <p>Castles</p>
-  </div>
-
-  <div class="filter">
-    <div><i class="fa-solid fa-person-swimming"></i></div>
-    <p>Amazing pools</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-campground"></i></div>
-    <p>Camping</p>
-  </div>
-
-  <div class="filter">
-    <div><i class="fa-solid fa-cow"></i></div>
-    <p>Farms</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-regular fa-snowflake"></i></div>
-    <p>Arctic</p>
-  </div>
-
-    <div class="filter">
-    <div><i class="fa-solid fa-igloo"></i></div>
-    <p>Domes</p>
-  </div>
-  <div class="filter">
-    <div><i class="fa-solid fa-ship"></i></div>
-    <p>Boats </p>
-  </div>
-
- <div class="tax-toggle">
-  <div class="form-check-reverse form-switch">
-  <input class="form-check-input" type="checkbox" role="switch" id="flexswitchCheckDefault">
-  <label class="form-check-label" for="switchCheckDefault">Display total after taxes</label>
-</div>
- </div>
-
-
-</div>
-<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
-  <% for(let listing of alllistings){ %>
-  <a href="/listings/<%=listing._id%>" class="listing-link">
-    <div class="card col listing-card">
-      <img
-        src="<%=listing.image.url %>"
-        class="card-img-top"
-        alt="listing_image"
-        style="height: 20rem"
-      />
-      <div class="card-img-overlay"></div>
-      <div class="card-body">
-        <p class="card-text">
-          <b> <%= listing.title %></b>
-          <br />
-          Rs. <%= listing.price.toLocaleString("en-IN") %>/night
-          <i class="taxinfo"> &nbsp; +18% GST</i>
-        </p>
-      </div>
-    </div>
-  </a>
-  <%}%>
-</div>
-
-<script>
-  let taxSwitch = document.getElementById("flexswitchCheckDefault");
-  taxSwitch.addEventListener("click", () => {
-let taxinfo=document.getElementsByClassName("taxinfo"); 
-for(info of taxinfo){
-  if(info.style.display!="inline"){
- info.style.display="inline";
-  }else{
-     info.style.display="none";
-  }
- 
-}
-  })
-</script>
+<% if (alllistings.length) { %>
+  <section class="listing-grid" aria-label="Available stays">
+    <% for (const listing of alllistings) { %>
+      <a href="/listings/<%= listing._id %>" class="listing-link">
+        <article class="card listing-card">
+          <img
+            src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1000&q=80' %>"
+            class="card-img-top"
+            alt="<%= listing.title %>"
+            loading="lazy"
+          />
+          <div class="card-body">
+            <h2 class="card-title h6"><%= listing.title %></h2>
+            <p class="card-text"><%= [listing.location, listing.country].filter(Boolean).join(', ') %></p>
+            <p class="listing-price"><strong>₹<%= Number(listing.price || 0).toLocaleString("en-IN") %></strong> <span class="text-muted">/ night</span></p>
+          </div>
+        </article>
+      </a>
+    <% } %>
+  </section>
+<% } else { %>
+  <section class="empty-state">
+    <h2 class="h4">No stays found</h2>
+    <p class="mb-3">Try another city or destination.</p>
+    <a href="/listings" class="btn btn-brand">See all stays</a>
+  </section>
+<% } %>

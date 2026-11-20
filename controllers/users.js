@@ -22,12 +22,10 @@ module.exports.signUp = async (req, res, next) => {
 module.exports.renderLogin=(req, res) => {
   res.render("users/login.ejs");
 }
-
 module.exports.Login=(req, res) => {
     req.flash("success", `Welcome ${req.user.username}`);
     res.redirect(res.locals.redirectUrl || "/listings");
   }
-
   module.exports.logOut=(req, res, next) => {
   req.logout((err) => {
     if (err) return next(err);

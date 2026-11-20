@@ -9,7 +9,7 @@ const ENV = {
   CLOUDINARY_URL: process.env.CLOUDINARY_URL && process.env.CLOUDINARY_URL.trim()
 };
 
-// Configure Cloudinary using either CLOUDINARY_URL or discrete creds
+// Configure Cloudinary using either CLOUDINARY_URL 
 if (ENV.CLOUDINARY_URL) {
   // The SDK accepts a connection string directly
   cloudinary.config(ENV.CLOUDINARY_URL);

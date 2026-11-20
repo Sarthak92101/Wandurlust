@@ -1,35 +1,21 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="row mt-3">
-  <h1 class="col-6 offset-3">Log In for Wanderlust</h1>
-
-  <div class="col-6 offset-3">
-    <form action="/login" method="POST" class="needs-validation" novalidate>
-      
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input
-          name="username"
-          id="username"
-          type="text"
-          class="form-control"
-          required
-        />
-      </div>
-
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input
-          name="password"
-          id="password"
-          type="password"
-          class="form-control"
-          required
-        />
-      </div>
-
-      <button type="submit" class="btn btn-success">Log In</button>
-      <a href="/signup" class="btn btn-outline-primary ms-2">New User? Sign Up</a>
-    </form>
-  </div>
-</div>
+<section class="form-panel">
+  <p class="text-uppercase small fw-bold mb-2" style="color: var(--brand); letter-spacing: .12em">Welcome back</p>
+  <h1 class="h2 fw-bold mb-2">Log in to Wanderlust</h1>
+  <p class="text-muted mb-4">Pick up where your next trip begins.</p>
+  <form action="/login" method="POST" class="needs-validation" novalidate>
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input name="username" id="username" type="text" class="form-control" autocomplete="username" required>
+      <div class="invalid-feedback">Enter your username.</div>
+    </div>
+    <div class="mb-4">
+      <label for="password" class="form-label">Password</label>
+      <input name="password" id="password" type="password" class="form-control" autocomplete="current-password" required>
+      <div class="invalid-feedback">Enter your password.</div>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Log in</button>
+  </form>
+  <p class="text-muted mt-4 mb-0">New to Wanderlust? <a href="/signup">Create an account</a></p>
+</section>
