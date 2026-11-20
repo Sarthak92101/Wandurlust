@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Wanderlust compass mark</title>
+  <rect width="64" height="64" rx="20" fill="#244f43"/>
+  <circle cx="32" cy="32" r="21" fill="none" stroke="#f6f4ee" stroke-opacity=".78" stroke-width="1.7"/>
+  <path d="M45 18 36.1 35.9 19 46l8.1-18.1L45 18Z" fill="#f6f4ee"/>
+  <path d="m45 18-8.9 17.9-9-8L45 18Z" fill="#df805d"/>
+  <circle cx="32" cy="32" r="3.2" fill="#244f43" stroke="#f6f4ee" stroke-width="1.5"/>
+  <path d="M32 8v4m24 20h-4M32 56v-4M8 32h4" stroke="#df805d" stroke-linecap="round" stroke-width="2"/>
+</svg>

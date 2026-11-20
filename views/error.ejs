@@ -1,7 +1,7 @@
 <% layout("/layouts/boilerplate") %>
 
 <section class="error-panel">
-  <span class="error-orbit"><i class="fa-regular fa-compass"></i></span>
+  <span class="error-orbit"><img src="/images/wanderlust-mark.svg" alt=""></span>
   <p class="eyebrow">A DETOUR, NOT THE END</p>
   <p class="error-code"><%= err.statusCode || 500 %></p>
   <h1><%= err.statusCode === 404 ? 'We can’t find that place.' : 'Something went off course.' %></h1>

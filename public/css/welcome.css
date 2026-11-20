@@ -28,7 +28,7 @@
 .welcome-nav { min-height: 92px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
 .welcome-brand { display: inline-flex; align-items: center; gap: .7rem; color: var(--text); text-decoration: none; font-family: 'Manrope', sans-serif; font-size: 1.18rem; font-weight: 800; letter-spacing: -.055em; }
 .welcome-brand:hover { color: var(--text); }
-.welcome-brand__mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 13px; background: var(--brand); color: var(--page); font-size: 1.05rem; }
+.welcome-brand__mark { width: 38px; height: 38px; display: block; object-fit: contain; }
 .welcome-brand__dot { color: var(--accent); }
 .welcome-nav__links { display: flex; align-items: center; gap: clamp(1rem, 2.5vw, 2.3rem); }
 .welcome-nav__links > a:not(.ui-btn) { color: var(--muted); font-size: .92rem; font-weight: 600; text-decoration: none; transition: color .2s ease; }
