@@ -1,4 +1,5 @@
 const User=require("../models/user.js");
+const Listing = require("../models/listing.js");
 
 module.exports.rendersignUpform=(req, res) => {
   res.render("users/signup.ejs");
@@ -33,4 +34,43 @@ module.exports.Login=(req, res) => {
     res.redirect("/listings");
   });
 }
+
+const safeReturnTo = (value) => {
+  if (typeof value === "string" && value.startsWith("/") && !value.startsWith("//")) return value;
+  return "/listings";
+};
+
+module.exports.saveListing = async (req, res) => {
+  const { listingId } = req.params;
+  const listing = await Listing.findById(listingId);
+  if (!listing) {
+    req.flash("error", "That stay could not be found.");
+    return res.redirect("/listings");
+  }
+  await User.updateOne({ _id: req.user._id }, { $addToSet: { savedListings: listing._id } });
+  req.flash("success", "Saved to your travel shortlist.");
+  res.redirect(safeReturnTo(req.body.returnTo));
+};
+
+module.exports.removeSavedListing = async (req, res) => {
+  await User.updateOne({ _id: req.user._id }, { $pull: { savedListings: req.params.listingId } });
+  req.flash("success", "Removed from your shortlist.");
+  res.redirect(safeReturnTo(req.body.returnTo));
+};
+
+module.exports.showSavedListings = async (req, res) => {
+  const user = await User.findById(req.user._id).populate({
+    path: "savedListings",
+    populate: { path: "owner" }
+  });
+  const alllistings = (user?.savedListings || []).filter(Boolean).reverse();
+  res.render("listings/index.ejs", {
+    alllistings,
+    searchQuery: "",
+    selectedMood: "",
+    budget: 15000,
+    savedOnly: true,
+    returnTo: req.originalUrl
+  });
+};
 

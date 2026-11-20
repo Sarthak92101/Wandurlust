@@ -4,7 +4,7 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const { listingschema } = require("../schema.js");
 const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing.js");
-const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
+const { isLoggedIn, isOwner, validateListing } = require("../expressMiddleware.js");
 const listingController = require("../controllers/listings.js");
 
 // ✅ Cloudinary + Multer setup
@@ -25,6 +25,7 @@ router
 
 //  New Listing Form (keep before :id route)
 router.get("/new", isLoggedIn, listingController.renderNewForm);
+router.get("/surprise", wrapAsync(listingController.surpriseMe));
 
 // Individual Listing Routes
 router

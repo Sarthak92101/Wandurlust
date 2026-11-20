@@ -3,9 +3,13 @@ const router = express.Router();
 const User = require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const passport = require("passport");
-const { saveRedirectUrl } = require("../middleware.js");
+const { saveRedirectUrl, isLoggedIn } = require("../expressMiddleware.js");
 
 const usersController = require("../controllers/users.js");
+
+router.get("/saved", isLoggedIn, wrapAsync(usersController.showSavedListings));
+router.post("/saved/:listingId", isLoggedIn, wrapAsync(usersController.saveListing));
+router.delete("/saved/:listingId", isLoggedIn, wrapAsync(usersController.removeSavedListing));
 
 router.route("/signup")
 .get(usersController.rendersignUpform)

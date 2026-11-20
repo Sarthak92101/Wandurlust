@@ -18,6 +18,16 @@
     updateThemeButton()
   })
 
+  const budgetRange = document.getElementById('budget-range')
+  const budgetValue = document.getElementById('budget-value')
+  const updateBudget = () => {
+    if (budgetRange && budgetValue) {
+      budgetValue.textContent = Number(budgetRange.value).toLocaleString('en-IN')
+    }
+  }
+  budgetRange?.addEventListener('input', updateBudget)
+  updateBudget()
+
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
   const forms = document.querySelectorAll('.needs-validation')
 

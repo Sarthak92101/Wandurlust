@@ -1,35 +1,93 @@
 <% layout("/layouts/boilerplate") %>
 
-<section class="page-heading">
-  <p class="text-uppercase small fw-bold" style="color: var(--brand); letter-spacing: .12em">A little escape awaits</p>
-  <h1 class="display-6 fw-bold"><%= searchQuery ? `Stays near “${searchQuery}”` : 'Find your somewhere' %></h1>
-  <p>Thoughtful places for your next memorable getaway.</p>
+<section class="explore-heading">
+  <div>
+    <p class="eyebrow">THE WANDERLUST COMPASS</p>
+    <h1><%= savedOnly ? 'Your travel shortlist' : 'Where do you feel like going?' %></h1>
+    <p><%= savedOnly ? 'The stays you saved for a someday.' : 'Choose a mood. We’ll find a place that fits it.' %></p>
+  </div>
+  <a href="/listings/surprise" class="ui-btn ui-btn--secondary surprise-link"><i class="fa-solid fa-shuffle"></i> Surprise me</a>
+</section>
+
+<% if (!savedOnly) { %>
+  <section class="compass-panel" aria-label="Find a stay by travel mood and budget">
+    <form action="/listings" method="GET" class="compass-form">
+      <input type="hidden" name="q" value="<%= searchQuery %>">
+      <fieldset class="mood-fieldset">
+        <legend>Pick the feeling you’re chasing</legend>
+        <div class="mood-options">
+          <label class="mood-choice">
+            <input type="radio" name="mood" value="quiet" <%= selectedMood === 'quiet' ? 'checked' : '' %>>
+            <span><i class="fa-solid fa-cloud-moon"></i><b>Slow & still</b><small>Quiet places to reset</small></span>
+          </label>
+          <label class="mood-choice">
+            <input type="radio" name="mood" value="coast" <%= selectedMood === 'coast' ? 'checked' : '' %>>
+            <span><i class="fa-solid fa-water"></i><b>Ocean air</b><small>Follow the shoreline</small></span>
+          </label>
+          <label class="mood-choice">
+            <input type="radio" name="mood" value="mountains" <%= selectedMood === 'mountains' ? 'checked' : '' %>>
+            <span><i class="fa-solid fa-mountain-sun"></i><b>Mountain time</b><small>Find your wild side</small></span>
+          </label>
+          <label class="mood-choice">
+            <input type="radio" name="mood" value="city" <%= selectedMood === 'city' ? 'checked' : '' %>>
+            <span><i class="fa-solid fa-city"></i><b>City energy</b><small>Stay where life happens</small></span>
+          </label>
+        </div>
+      </fieldset>
+      <div class="compass-bottom-row">
+        <label class="budget-control" for="budget-range">
+          <span><i class="fa-solid fa-wallet"></i> Nightly budget</span>
+          <strong>Up to ₹<output id="budget-value"><%= Number(budget).toLocaleString('en-IN') %></output></strong>
+          <input id="budget-range" type="range" name="budget" min="500" max="15000" step="500" value="<%= budget %>">
+          <span class="budget-range-labels"><small>₹500</small><small>₹15,000+</small></span>
+        </label>
+        <div class="compass-actions">
+          <% if (selectedMood || searchQuery) { %><a href="/listings" class="ui-btn ui-btn--quiet">Clear choices</a><% } %>
+          <button class="ui-btn ui-btn--primary" type="submit">Find my kind of stay <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </form>
+  </section>
+<% } %>
+
+<section class="results-heading">
+  <div>
+    <p class="eyebrow"><%= savedOnly ? 'SAVED FOR LATER' : selectedMood ? 'MOOD MATCHES' : 'OPEN THE MAP' %></p>
+    <h2><%= savedOnly ? 'Your shortlist' : selectedMood ? `Stays for ${selectedMood === 'quiet' ? 'slow & still' : selectedMood === 'coast' ? 'ocean air' : selectedMood === 'mountains' ? 'mountain time' : 'city energy'}` : searchQuery ? `Stays near “${searchQuery}”` : 'Find your somewhere' %></h2>
+  </div>
+  <span class="results-count"><%= alllistings.length %> <%= alllistings.length === 1 ? 'stay' : 'stays' %></span>
 </section>
 
 <% if (alllistings.length) { %>
   <section class="listing-grid" aria-label="Available stays">
     <% for (const listing of alllistings) { %>
-      <a href="/listings/<%= listing._id %>" class="listing-link">
-        <article class="card listing-card">
-          <img
-            src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1000&q=80' %>"
-            class="card-img-top"
-            alt="<%= listing.title %>"
-            loading="lazy"
-          />
-          <div class="card-body">
-            <h2 class="card-title h6"><%= listing.title %></h2>
-            <p class="card-text"><%= [listing.location, listing.country].filter(Boolean).join(', ') %></p>
-            <p class="listing-price"><strong>₹<%= Number(listing.price || 0).toLocaleString("en-IN") %></strong> <span class="text-muted">/ night</span></p>
+      <% const isSaved = currUser && (currUser.savedListings || []).some((savedId) => savedId.toString() === listing._id.toString()); %>
+      <article class="listing-tile">
+        <a href="/listings/<%= listing._id %>" class="listing-link">
+          <div class="listing-image-wrap">
+            <img src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1000&q=80' %>" class="listing-image" alt="<%= listing.title %>" loading="lazy">
+            <span class="listing-image-label"><i class="fa-solid fa-location-dot"></i> <%= listing.location || 'Somewhere worth going' %></span>
           </div>
-        </article>
-      </a>
+          <div class="listing-copy">
+            <div class="listing-copy-top"><h3><%= listing.title %></h3><span class="listing-country"><%= listing.country %></span></div>
+            <p class="listing-description"><%= listing.description || 'A place to make your own.' %></p>
+            <p class="listing-price"><strong>₹<%= Number(listing.price || 0).toLocaleString("en-IN") %></strong><span>/ night</span></p>
+          </div>
+        </a>
+        <% if (currUser) { %>
+          <form class="save-stay-form" method="POST" action="/saved/<%= listing._id %><%= isSaved ? '?_method=DELETE' : '' %>">
+            <input type="hidden" name="returnTo" value="<%= returnTo %>">
+            <button class="save-stay <%= isSaved ? 'is-saved' : '' %>" type="submit" aria-label="<%= isSaved ? 'Remove from' : 'Save to' %> your shortlist" title="<%= isSaved ? 'Saved to your shortlist' : 'Save this stay' %>"><i class="fa-<%= isSaved ? 'solid' : 'regular' %> fa-heart"></i></button>
+          </form>
+        <% } %>
+      </article>
     <% } %>
   </section>
 <% } else { %>
   <section class="empty-state">
-    <h2 class="h4">No stays found</h2>
-    <p class="mb-3">Try another city or destination.</p>
-    <a href="/listings" class="btn btn-brand">See all stays</a>
+    <span class="empty-state-icon"><i class="fa-regular fa-compass"></i></span>
+    <h2><%= savedOnly ? 'Your shortlist is waiting' : 'No stays match this compass setting' %></h2>
+    <p><%= savedOnly ? 'Tap the heart on any stay to keep it here.' : 'Try a different mood, a higher budget, or clear your choices.' %></p>
+    <a href="/listings" class="ui-btn ui-btn--brand"><%= savedOnly ? 'Explore stays' : 'Reset the compass' %></a>
   </section>
 <% } %>

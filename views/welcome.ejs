@@ -1,75 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Wanderlust</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <meta name="theme-color" content="#f6f4ee">
+  <title>Wanderlust — Find your next somewhere</title>
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('wanderlust-theme');
+        const preferred = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = saved || preferred;
+      } catch (_) { document.documentElement.dataset.theme = 'light'; }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-    integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="/css/theme.css">
   <link rel="stylesheet" href="/css/welcome.css">
 </head>
+<body class="welcome-page">
+  <div class="welcome-glow welcome-glow--one" aria-hidden="true"></div>
+  <div class="welcome-glow welcome-glow--two" aria-hidden="true"></div>
 
-<body>
-  <div class="welcome-container">
-    <!-- Background Elements -->
-    <div class="background-elements">
-      <div class="floating-shape shape-1"></div>
-      <div class="floating-shape shape-2"></div>
-      <div class="floating-shape shape-3"></div>
-      <div class="floating-shape shape-4"></div>
-    </div>
+  <header class="welcome-nav">
+    <a class="welcome-brand" href="/" aria-label="Wanderlust home">
+      <span class="welcome-brand__mark"><i class="fa-solid fa-compass"></i></span>
+      <span>Wanderlust<span class="welcome-brand__dot">.</span></span>
+    </a>
+    <nav class="welcome-nav__links" aria-label="Main navigation">
+      <a href="/listings">Explore stays</a>
+      <a href="/login">Log in</a>
+      <a href="/signup" class="ui-btn ui-btn--brand ui-btn--sm">Join Wanderlust <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+      <button class="ui-theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark theme" title="Switch theme"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+    </nav>
+  </header>
 
-    <!-- Main Content -->
-    <div class="welcome-content">
-      <!-- Compass Icon -->
-      <div class="compass-wrapper">
-        <i class="fas fa-compass compass-icon"></i>
+  <main class="welcome-hero">
+    <section class="welcome-copy" aria-labelledby="hero-title">
+      <p class="welcome-eyebrow"><span class="welcome-eyebrow__line"></span> A little further from ordinary</p>
+      <h1 id="hero-title" class="welcome-title">
+        <span>Collect moments.</span>
+        <span>Stay <em>somewhere.</em></span>
+      </h1>
+      <p class="welcome-description">Slow mornings in the hills. Salt-air evenings by the coast. Find a stay that makes getting away feel like coming home.</p>
+      <div class="welcome-actions">
+        <a href="/listings" class="ui-btn ui-btn--primary ui-btn--lg">Find your stay <span class="ui-btn__arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+        <a href="/listings/surprise" class="ui-btn ui-btn--secondary"><i class="fa-solid fa-shuffle"></i> Surprise me</a>
       </div>
-
-      <!-- Welcome Text -->
-      <div class="text-container">
-        <h1 class="welcome-title">
-          <span class="word">Welcome</span>
-          <span class="word">to</span>
-          <span class="word">Wanderlust</span>
-        </h1>
-        <p class="welcome-subtitle">Discover Your Perfect Gateway</p>
+      <div class="welcome-proof">
+        <div class="welcome-proof__avatars" aria-hidden="true"><span>A</span><span>M</span><span>R</span></div>
+        <p><strong>Places shared by hosts.</strong><br><span>Stories and reviews from travelers.</span></p>
       </div>
+    </section>
 
-      <!-- Animated Particles -->
-      <div class="particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+    <section class="welcome-visual" aria-label="Featured destinations" aria-roledescription="carousel">
+      <div class="visual-orbit visual-orbit--outer" aria-hidden="true"></div>
+      <div class="visual-orbit visual-orbit--inner" aria-hidden="true"></div>
+      <figure class="hero-photo">
+        <img data-destination-image src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1400&q=88" alt="Mountain lake surrounded by alpine forest" fetchpriority="high">
+        <figcaption class="hero-photo__caption"><span data-destination-note>FIELD NOTE&nbsp; 01</span><span data-destination-location>Dolomites, Italy <i class="fa-solid fa-location-dot"></i></span></figcaption>
+      </figure>
+      <div class="stay-note stay-note--top"><span class="stay-note__icon"><i class="fa-solid fa-sun"></i></span><span><strong data-destination-title>Take the scenic route</strong><small data-destination-subtitle>Cabin mornings, mountain air</small></span></div>
+      <div class="stay-note stay-note--bottom"><span class="stay-note__rating"><i class="fa-solid fa-compass"></i></span><span><strong>Make room for wonder</strong><small>Start with a place to stay</small></span></div>
+      <div class="compass-stamp" aria-hidden="true"><i class="fa-solid fa-compass"></i><span>GO<br>GENTLY</span></div>
+      <div class="destination-controls" aria-label="Featured destinations">
+        <div class="destination-controls__top"><span><b data-destination-count>01</b> <i>/</i> 03</span><button class="ui-btn ui-btn--secondary ui-btn--icon destination-next" type="button" aria-label="Show next destination"><i class="fa-solid fa-arrow-right"></i></button></div>
+        <div class="destination-progress" aria-hidden="true"><span data-destination-progress></span></div>
+        <div class="destination-dots">
+          <button type="button" class="is-active" data-destination-dot="0" aria-label="Show Dolomites, Italy"></button>
+          <button type="button" data-destination-dot="1" aria-label="Show Ubud, Bali"></button>
+          <button type="button" data-destination-dot="2" aria-label="Show Algarve, Portugal"></button>
+        </div>
       </div>
+    </section>
+  </main>
 
-      <!-- Enter Button -->
-      <div class="button-container">
-        <a href="/listings" class="enter-btn">
-          <span>Explore Listings</span>
-          <i class="fas fa-arrow-right"></i>
-        </a>
-      </div>
-    </div>
-  </div>
+  <footer class="welcome-footer">
+    <span>Go somewhere. Come back with a story.</span>
+    <a href="/listings">Start exploring <i class="fa-solid fa-arrow-right"></i></a>
+  </footer>
 
-  <!-- GSAP CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="/js/script.js"></script>
   <script src="/js/welcome.js"></script>
 </body>
-
 </html>
-

@@ -11,19 +11,22 @@
       <form class="destination-search mx-lg-auto my-3 my-lg-0" action="/listings" method="GET" role="search">
         <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
         <input class="form-control" type="search" name="q" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" placeholder="Search a destination" aria-label="Search listings">
-        <button class="btn btn-search" type="submit">Search</button>
+        <button class="ui-btn ui-btn--primary ui-btn--sm" type="submit">Search</button>
       </form>
       <div class="navbar-nav align-items-lg-center gap-lg-2 ms-lg-auto">
         <a class="nav-link" href="/listings">Explore stays</a>
         <% if (currUser) { %>
+          <% let displayName = currUser.name || currUser.username || "Traveler"; %>
+          <% if (displayName.includes("@")) displayName = displayName.split("@")[0]; %>
           <a class="nav-link" href="/listings/new">Add a stay</a>
-          <span class="nav-user">Hi, <%= currUser.username %></span>
-          <a class="btn btn-outline-brand btn-sm" href="/logout">Log out</a>
+          <a class="nav-link" href="/saved">Shortlist</a>
+          <span class="nav-user">Hi, <%= displayName %></span>
+          <a class="ui-btn ui-btn--secondary ui-btn--sm" href="/logout">Log out</a>
         <% } else { %>
           <a class="nav-link" href="/login">Log in</a>
-          <a class="btn btn-brand btn-sm" href="/signup">Sign up</a>
+          <a class="ui-btn ui-btn--brand ui-btn--sm" href="/signup">Sign up</a>
         <% } %>
-        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark theme" title="Switch theme">
+        <button class="ui-theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark theme" title="Switch theme">
           <i class="fa-solid fa-moon" aria-hidden="true"></i>
         </button>
       </div>
